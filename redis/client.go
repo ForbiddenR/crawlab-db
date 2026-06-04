@@ -357,7 +357,7 @@ func (client *Client) ZPopMaxOne(collection string) (value string, err error) {
 	if err != nil {
 		return "", err
 	}
-	if values == nil || len(values) == 0 {
+	if len(values) == 0 {
 		return "", nil
 	}
 	return values[0], nil
@@ -371,7 +371,7 @@ func (client *Client) ZPopMinOne(collection string) (value string, err error) {
 	if err != nil {
 		return "", err
 	}
-	if values == nil || len(values) == 0 {
+	if len(values) == 0 {
 		return "", nil
 	}
 	return values[0], nil

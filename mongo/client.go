@@ -4,13 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"sync"
+
 	"github.com/apex/log"
 	"github.com/cenkalti/backoff/v4"
 	"github.com/crawlab-team/go-trace"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"sync"
 )
 
 var AppName = "crawlab-db"
@@ -131,15 +132,16 @@ func newMongoClient(ctx context.Context, _opts *ClientOptions) (c *mongo.Client,
 	bp := backoff.NewExponentialBackOff()
 	err = backoff.Retry(func() error {
 		errMsg := fmt.Sprintf("waiting for connect mongo database, after %f seconds try again.", bp.NextBackOff().Seconds())
-		c, err = mongo.NewClient(mongoOpts)
+		// c, err = mongo.NewClient(mongoOpts)
+		_, err := mongo.Connect(ctx, mongoOpts)
 		if err != nil {
 			log.WithError(err).Warnf(errMsg)
 			return err
 		}
-		if err := c.Connect(ctx); err != nil {
-			log.WithError(err).Warnf(errMsg)
-			return err
-		}
+		// if err := c.Connect(ctx); err != nil {
+		// 	log.WithError(err).Warnf(errMsg)
+		// 	return err
+		// }
 		return nil
 	}, bp)
 
