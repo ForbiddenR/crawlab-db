@@ -133,7 +133,7 @@ func newMongoClient(ctx context.Context, _opts *ClientOptions) (c *mongo.Client,
 	err = backoff.Retry(func() error {
 		errMsg := fmt.Sprintf("waiting for connect mongo database, after %f seconds try again.", bp.NextBackOff().Seconds())
 		// c, err = mongo.NewClient(mongoOpts)
-		_, err := mongo.Connect(ctx, mongoOpts)
+		c, err = mongo.Connect(ctx, mongoOpts)
 		if err != nil {
 			log.WithError(err).Warnf(errMsg)
 			return err
